@@ -1,2 +1,2 @@
-# recipe-app-api
-Recipe API Project
+# Django-drf-ecommerce
+Ecommerce API Project
