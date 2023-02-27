@@ -1,4 +1,5 @@
 from django.db import connection
+from django.db.models import Prefetch
 from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from pygments import highlight
@@ -44,17 +45,12 @@ class ProductViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            self.queryset.filter(slug=slug).select_related("category", "brand"),
+            self.queryset.filter(slug=slug)
+            .select_related("category", "brand")
+            .prefetch_related(Prefetch("product_line__product_image")),
             many=True,
         )
         data = Response(serializer.data)
-
-        # q = list(connection.queries)
-        # print(len(q))
-
-        # for qs in q:
-        #     sqlformatted = format(str(qs["sql"]), reindent=True)
-        #     print(highlight(sqlformatted, SqlLexer(), TerminalFormatter()))
 
         return data
 
